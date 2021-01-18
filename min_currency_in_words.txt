@@ -1,0 +1,104 @@
+create or replace FUNCTION min_currency_in_words (
+code IN VARCHAR2,
+lang IN VARCHAR2
+) RETURN VARCHAR2 AS
+sreturn VARCHAR2(20);
+BEGIN
+IF lang = 'vn' THEN
+CASE code
+WHEN 'VND' THEN
+sreturn := 'Đồng';
+WHEN 'USD' THEN
+sreturn := 'Xu';
+WHEN 'EUR' THEN
+sreturn := 'Xu';
+WHEN 'GBP' THEN
+sreturn := 'Xu ';
+WHEN 'HKD' THEN
+sreturn := 'Xu';
+WHEN 'CHF' THEN
+sreturn := 'Rappen';
+WHEN 'JPY' THEN
+sreturn := 'Sen';
+WHEN 'THB' THEN
+sreturn := 'Satang';
+WHEN 'AUD' THEN
+sreturn := 'Xu';
+WHEN 'CAD' THEN
+sreturn := 'Xu';
+WHEN 'SGD' THEN
+sreturn := 'Xu';
+WHEN 'SEK' THEN
+sreturn := 'Öre';
+WHEN 'LAK' THEN
+sreturn := 'Att';
+WHEN 'DKK' THEN
+sreturn := 'Øre';
+WHEN 'NOK' THEN
+sreturn := 'Øre';
+WHEN 'CNY' THEN
+sreturn := 'Fen';
+WHEN 'RUB' THEN
+sreturn := 'Kopek';
+WHEN 'NZD' THEN
+sreturn := 'Xu';
+WHEN 'KRW' THEN
+sreturn := 'Jeon';
+WHEN 'TWD' THEN
+sreturn := 'Xu';
+WHEN 'MYR' THEN
+sreturn := 'Sen';
+ELSE
+sreturn := '';
+END CASE;
+ELSE
+CASE code
+WHEN 'VND' THEN
+sreturn := 'Dong';
+WHEN 'USD' THEN
+sreturn := 'Cents';
+WHEN 'EUR' THEN
+sreturn := 'Cents';
+WHEN 'GBP' THEN
+sreturn := 'Penny ';
+WHEN 'HKD' THEN
+sreturn := 'Cent';
+WHEN 'CHF' THEN
+sreturn := 'Rappen';
+WHEN 'JPY' THEN
+sreturn := 'Sen';
+WHEN 'THB' THEN
+sreturn := 'Satang';
+WHEN 'AUD' THEN
+sreturn := 'Cent';
+WHEN 'CAD' THEN
+sreturn := 'Cent';
+WHEN 'SGD' THEN
+sreturn := 'Cent';
+WHEN 'SEK' THEN
+sreturn := 'Öre';
+WHEN 'LAK' THEN
+sreturn := 'Att';
+WHEN 'DKK' THEN
+sreturn := 'Øre';
+WHEN 'NOK' THEN
+sreturn := 'Øre';
+WHEN 'CNY' THEN
+sreturn := 'Fen';
+WHEN 'RUB' THEN
+sreturn := 'Kopek';
+WHEN 'NZD' THEN
+sreturn := 'Cent';
+WHEN 'KRW' THEN
+sreturn := 'Jeon';
+WHEN 'TWD' THEN
+sreturn := 'Cent';
+WHEN 'MYR' THEN
+sreturn := 'Sen';
+ELSE
+sreturn := '';
+END CASE;
+END IF;
+
+RETURN sreturn;
+END min_currency_in_words;

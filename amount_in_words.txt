@@ -1,0 +1,15 @@
+create or replace FUNCTION amount_in_words (
+so IN NUMBER,
+curr IN VARCHAR2
+) RETURN VARCHAR2 AS
+sreturn VARCHAR2(4000);
+BEGIN
+IF so IS NULL THEN RETURN '';
+END IF;
+sreturn := amount_in_words_vn(so, curr)
+|| CHR(10) || CHR(10) || '('
+|| amount_in_words_en(so, curr)
+|| ')';
+
+RETURN sreturn;
+END amount_in_words;

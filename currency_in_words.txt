@@ -1,0 +1,104 @@
+create or replace FUNCTION currency_in_words (
+code IN VARCHAR2,
+lang IN VARCHAR2
+) RETURN VARCHAR2 AS
+sreturn VARCHAR2(20);
+BEGIN
+IF lang = 'vn' THEN
+CASE code
+WHEN 'VND' THEN
+sreturn := 'Đồng';
+WHEN 'USD' THEN
+sreturn := 'Đô La Mỹ';
+WHEN 'EUR' THEN
+sreturn := 'Euro';
+WHEN 'GBP' THEN
+sreturn := 'Bảng Anh';
+WHEN 'HKD' THEN
+sreturn := 'Đô La Hồng Kông';
+WHEN 'CHF' THEN
+sreturn := 'Franc Thụy Sỹ';
+WHEN 'JPY' THEN
+sreturn := 'Yên';
+WHEN 'THB' THEN
+sreturn := 'Baht';
+WHEN 'AUD' THEN
+sreturn := 'Đô La Úc';
+WHEN 'CAD' THEN
+sreturn := 'Đô La Canada';
+WHEN 'SGD' THEN
+sreturn := 'Đô La Singapor';
+WHEN 'SEK' THEN
+sreturn := 'Krona Thụy Điển';
+WHEN 'LAK' THEN
+sreturn := 'Kip Lào';
+WHEN 'DKK' THEN
+sreturn := 'Krone Đan Mạch';
+WHEN 'NOK' THEN
+sreturn := 'Krone Na Uy';
+WHEN 'CNY' THEN
+sreturn := 'Nhân Dân Tệ';
+WHEN 'RUB' THEN
+sreturn := 'Rub Nga';
+WHEN 'NZD' THEN
+sreturn := 'Đô La New Zealand';
+WHEN 'KRW' THEN
+sreturn := 'Won';
+WHEN 'TWD' THEN
+sreturn := 'Đô La Đài Loan';
+WHEN 'MYR' THEN
+sreturn := 'Ringgit';
+ELSE
+sreturn := '';
+END CASE;
+ELSE
+CASE code
+WHEN 'VND' THEN
+sreturn := 'Vietnam Dong';
+WHEN 'USD' THEN
+sreturn := 'US Dollar';
+WHEN 'EUR' THEN
+sreturn := 'Euro';
+WHEN 'GBP' THEN
+sreturn := 'British Pound';
+WHEN 'HKD' THEN
+sreturn := 'HongKong Dollar';
+WHEN 'CHF' THEN
+sreturn := 'Swiss Franc';
+WHEN 'JPY' THEN
+sreturn := 'Japanese Yen';
+WHEN 'THB' THEN
+sreturn := 'Thai Baht';
+WHEN 'AUD' THEN
+sreturn := 'Australia Dollar';
+WHEN 'CAD' THEN
+sreturn := 'Canada Dollar';
+WHEN 'SGD' THEN
+sreturn := 'Singapor Dollar';
+WHEN 'SEK' THEN
+sreturn := 'Swedish Krona';
+WHEN 'LAK' THEN
+sreturn := 'Lao Kip';
+WHEN 'DKK' THEN
+sreturn := 'Danish Krone';
+WHEN 'NOK' THEN
+sreturn := 'Norwagian Krone';
+WHEN 'CNY' THEN
+sreturn := 'Chinese Yuan Renminbi';
+WHEN 'RUB' THEN
+sreturn := 'Russian Ruble';
+WHEN 'NZD' THEN
+sreturn := 'Dollar New Zealand';
+WHEN 'KRW' THEN
+sreturn := 'Won';
+WHEN 'TWD' THEN
+sreturn := 'Taiwan New Dollar';
+WHEN 'MYR' THEN
+sreturn := 'Malaysian Ringgit';
+ELSE
+sreturn := '';
+END CASE;
+END IF;
+
+RETURN sreturn;
+END currency_in_words;

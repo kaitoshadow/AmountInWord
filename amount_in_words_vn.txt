@@ -1,0 +1,193 @@
+create or replace FUNCTION amount_in_words_vn (
+so IN NUMBER,
+curr IN VARCHAR2
+) RETURN VARCHAR2 AS
+
+TYPE w_array IS
+TABLE OF VARCHAR2(255);
+l_str w_array := w_array('Không', 'Một', 'Hai', 'Ba', 'Bốn',
+'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín');
+sreturn VARCHAR2(4000);
+snumber NUMBER;
+safterpoint NUMBER;
+hauto VARCHAR2(200);
+ty NUMBER;
+
+FUNCTION dochangchuc (
+so IN NUMBER,
+daydu IN BOOLEAN
+) RETURN VARCHAR2 AS
+
+sreturn VARCHAR2(2000);
+chuc NUMBER;
+donvi NUMBER;
+TYPE w_array IS
+TABLE OF VARCHAR2(255);
+l_str w_array := w_array('Không', 'Một', 'Hai', 'Ba', 'Bốn',
+'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín');
+BEGIN
+sreturn := '';
+IF sreturn = 0 THEN
+sreturn := l_str(1);
+END IF;
+--Hàm để lấy số hàng chục ví dụ 21/10 = 2
+chuc := trunc(so / 10);
+--Lấy số hàng đơn vị bằng phép chia 21 % 10 = 1
+donvi := MOD(so, 10);
+--Nếu số hàng chục tồn tại tức >=20
+IF chuc > 1 THEN
+sreturn := sreturn
+|| ' '
+|| l_str(chuc + 1)
+|| ' Mươi';
+
+IF donvi = 1 THEN
+sreturn := sreturn || ' Mốt';
+END IF;
+ELSIF chuc = 1 THEN --Số hàng chục từ 10-19
+sreturn := ' Mười';
+IF donvi = 1 THEN
+sreturn := sreturn || ' Một';
+END IF;
+ELSIF daydu = true AND donvi > 0 THEN --Nếu hàng đơn vị khác 0 và có các số hàng trăm ví dụ 101 => thì biến daydu = true => và sẽ đọc một trăm lẻ một
+sreturn := sreturn || ' Lẻ';
+ELSIF daydu = false AND donvi = 0 THEN
+sreturn := sreturn || l_str(donvi+1);
+END IF;
+
+IF donvi = 5 AND chuc >= 1 THEN --Nếu đơn vị là số 5 và có hàng chục thì chuỗi sẽ là " lăm" chứ không phải là " năm"
+sreturn := sreturn || ' Lăm';
+ELSIF donvi > 1 OR ( donvi = 1 AND chuc = 0 ) THEN
+sreturn := sreturn
+|| ' '
+|| l_str(donvi+1);
+END IF;
+
+RETURN sreturn;
+END dochangchuc;
+
+FUNCTION dochangtram (
+so IN NUMBER,
+daydu IN BOOLEAN
+) RETURN VARCHAR2 AS
+
+sreturn VARCHAR2(4000);
+tram NUMBER;
+snumber NUMBER;
+TYPE w_array IS
+TABLE OF VARCHAR2(255);
+l_str w_array := w_array('Không', 'Một', 'Hai', 'Ba', 'Bốn',
+'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín');
+BEGIN
+sreturn := '';
+snumber := so;
+--Lấy số hàng trăm ví du 434 / 100 = 4
+tram := trunc(so / 100);
+--Lấy phần còn lại của hàng trăm 434 % 100 = 34 (dư 34)
+snumber := MOD(snumber, 100);
+IF daydu = true OR tram > 0 THEN
+sreturn := sreturn
+|| ' '
+|| l_str(tram + 1)
+|| ' Trăm';
+
+sreturn := sreturn || dochangchuc(snumber, true);
+ELSE
+sreturn := dochangchuc(snumber, false);
+END IF;
+
+RETURN sreturn;
+END dochangtram;
+
+FUNCTION dochangtrieu (
+so IN NUMBER,
+daydu IN BOOLEAN
+) RETURN VARCHAR2 AS
+
+sreturn VARCHAR2(4000);
+trieu NUMBER;
+nghin NUMBER;
+snumber NUMBER;
+sdaydu BOOLEAN;
+TYPE w_array IS
+TABLE OF VARCHAR2(255);
+l_str w_array := w_array('Không', 'Một', 'Hai', 'Ba', 'Bốn',
+'Năm', 'Sáu', 'Bảy', 'Tám', 'Chín');
+BEGIN
+sreturn := '';
+snumber := so;
+sdaydu := daydu;
+--Lấy số hàng triệu 1434000 / 1000000 = 1
+trieu := trunc(snumber / 1000000);
+--Lấy phần dư sau số hàng triệu ví dụ 2,123,000 => so = 123,000
+snumber := MOD(snumber, 1000000);
+IF trieu > 0 THEN
+sreturn := dochangtram(trieu, sdaydu)
+|| ' Triệu';
+sdaydu := true;
+END IF;
+--Lấy số hàng nghìn
+
+nghin := trunc(snumber / 1000);
+--Lấy phần dư sau số hàng nghin
+snumber := MOD(snumber, 1000);
+IF nghin > 0 THEN
+sreturn := sreturn
+|| + dochangtram(nghin, sdaydu)
+|| ' Nghìn';
+sdaydu := true;
+END IF;
+
+IF snumber > 0 THEN
+sreturn := sreturn || + dochangtram(snumber, sdaydu);
+ELSE
+sreturn := l_str(1);
+END IF;
+
+RETURN sreturn;
+END dochangtrieu;
+
+BEGIN
+sreturn := '';
+hauto := '';
+snumber := trunc(so);
+safterpoint := ( abs(so) - trunc(abs(so)) ) * 100;
+
+LOOP
+-- Lấy phần dư sau số hàng tỷ
+ty := MOD(snumber, 1000000000);
+-- Lấy số hàng tỷ
+snumber := trunc(snumber / 1000000000);
+IF snumber > 0 THEN
+sreturn := dochangtrieu(ty, true)
+|| hauto
+|| sreturn;
+ELSE
+sreturn := dochangtrieu(ty, false)
+|| hauto
+|| sreturn;
+END IF;
+
+hauto := ' Tỷ';
+
+EXIT WHEN snumber <= 0;
+END LOOP;
+
+IF nvl(safterpoint, 0) > 0 THEN
+sreturn := sreturn
+|| ' '
+|| currency_in_words(curr, 'vn')
+|| ' và'
+|| dochangchuc(safterpoint, false)
+|| ' '
+|| min_currency_in_words(curr, 'vn');
+ELSE
+sreturn := sreturn
+|| ' '
+|| currency_in_words(curr, 'vn');
+END IF;
+
+dbms_output.put_line(trim(sreturn));
+dbms_output.put_line(length(sreturn));
+RETURN trim(sreturn);
+END amount_in_words_vn;
